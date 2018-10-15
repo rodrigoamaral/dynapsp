@@ -96,3 +96,27 @@ def test_task_add_finished_effort_greater_than_remaining():
     t.add_finished_effort(13)
     assert t.remaining_effort == 0
 
+
+def test_calculate_employee_payment():
+    e = Employee(1, max_dedication=1.1, normal_salary=1000, overtime_salary=2000)
+    assert e.payment(2, 1.1) == pytest.approx(2400)
+
+
+def test_employee_no_dedication_payment():
+    e = Employee(1, max_dedication=1.1, normal_salary=1000, overtime_salary=2000)
+    assert e.payment(2, 0) == pytest.approx(0)
+
+def test_employee_no_work_payment():
+    e = Employee(1, max_dedication=1.1, normal_salary=1000, overtime_salary=2000)
+    assert e.payment(0, 1.1) == pytest.approx(0)
+
+
+def test_employee_overdedication_payment():
+    e = Employee(1, max_dedication=1.1, normal_salary=1000, overtime_salary=2000)
+    assert e.payment(2, 1.5) == pytest.approx(2400)
+
+
+def test_employee_underdedication_payment():
+    e = Employee(1, max_dedication=1.1, normal_salary=1000, overtime_salary=2000)
+    assert e.payment(2, 0.5) == pytest.approx(1000)
+

@@ -42,16 +42,30 @@ class Task(Entity):
 
 
 class Employee(Entity):
-    def __init__(self, oid):
+    def __init__(self, oid, max_dedication=0, normal_salary=0, overtime_salary=0):
         Entity.__init__(self, oid)
         self._skills = set()
+        self._max_dedication = max_dedication
+        self._normal_salary = normal_salary
+        self._overtime_salary = overtime_salary
 
-    def add_skill(self, skill):
-        self.skills.add(skill)
 
     @property
     def skills(self):
         return self._skills
+
+
+    def add_skill(self, skill):
+        self.skills.add(skill)
+
+
+    def payment(self, duration, dedication):
+        ded = min(dedication, self._max_dedication)
+        normal_dedication = min(1, ded)
+        over_dedication = max(0, ded - 1)
+        regular_payment = self._normal_salary * normal_dedication * duration 
+        overtime_payment = self._overtime_salary * over_dedication * duration
+        return regular_payment + overtime_payment
 
 
 class Project():
