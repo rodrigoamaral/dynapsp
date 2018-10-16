@@ -2,7 +2,7 @@
 """Tests for `dynapsp` package."""
 
 import pytest
-from dynapsp.project import Project, Task, Employee, InvalidDependencyError
+from dynapsp.project import Project, Task, Employee, InvalidDependencyError, ProjectEvent
 
 
 @pytest.fixture
@@ -29,6 +29,8 @@ def minimum_project():
     p = Project()
     p.add_task(Task(1))
     p.add_task(Task(2))
+    p.add_employee(Employee(1))
+    p.add_employee(Employee(2))
     return p
 
 
@@ -119,4 +121,25 @@ def test_employee_overdedication_payment():
 def test_employee_underdedication_payment():
     e = Employee(1, max_dedication=1.1, normal_salary=1000, overtime_salary=2000)
     assert e.payment(2, 0.5) == pytest.approx(1000)
+
+
+def test_empty_timeline(minimum_project):
+    p = minimum_project
+    assert len(p.timeline) == 0
+
+
+def test_add_event_to_timeline(minimum_project):
+    p = minimum_project
+    p.add_event(ProjectEvent(0.75))
+    assert len(p.timeline) > 0 and isinstance(p.timeline[0], ProjectEvent)
+
+def test_events_within_interval(minimum_project):
+    p = minimum_project
+    p.add_event(ProjectEvent(0.75))
+    p.add_event(ProjectEvent(1.2))
+    p.add_event(ProjectEvent(2.1))
+    p.add_event(ProjectEvent(3.3))
+    events = p.events_within_interval(1, 3)
+    assert len(events) == 2 and all(n in [ev.instant for ev in events] for n in [1.2, 2.1])
+
 

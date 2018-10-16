@@ -68,11 +68,22 @@ class Employee(Entity):
         return regular_payment + overtime_payment
 
 
+class ProjectEvent():
+    def __init__(self, instant):
+        self._instant = instant
+
+
+    @property
+    def instant(self):
+        return self._instant
+
+
 class Project():
     def __init__(self):
         self._tasks = Repository()
         self._employees = Repository()
         self._tpg = nx.DiGraph()
+        self._timeline = []
 
 
     @property
@@ -90,6 +101,11 @@ class Project():
         return self._tpg
 
 
+    @property
+    def timeline(self):
+        return self._timeline
+
+
     def add_task(self, task):
         self.tasks.add(task)
 
@@ -103,6 +119,14 @@ class Project():
             if not self.tasks.get(t):
                 raise InvalidDependencyError("Task {} does not exist".format(t))
         self.tpg.add_edge(t1, t2)
+
+
+    def add_event(self, event):
+        self.timeline.append(event)
+
+
+    def events_within_interval(self, start, finish):
+        return [ev for ev in self.timeline if ev.instant >=start and ev.instant <= finish]
 
 
 class Error(Exception):
