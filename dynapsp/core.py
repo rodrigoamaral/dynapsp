@@ -1,4 +1,4 @@
-class Entity():
+class Entity:
     def __init__(self, oid):
         self._oid = oid
 

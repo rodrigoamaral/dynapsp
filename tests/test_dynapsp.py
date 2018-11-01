@@ -1,4 +1,3 @@
-
 """Tests for `dynapsp` package."""
 
 import pytest
@@ -23,6 +22,7 @@ def employee():
     e.add_skill(2)
     e.add_skill(3)
     return e
+
 
 @pytest.fixture
 def minimum_project():
@@ -78,7 +78,11 @@ def test_task_employee_missing_skills_(task, employee):
 def test_add_dependency_to_tpg(minimum_project):
     p = minimum_project
     p.add_dependency(1, 2)
-    assert (p.tpg.number_of_nodes() == 2) and (p.tpg.number_of_edges() == 1) and ((1, 2) in p.tpg.edges)
+    assert (
+        (p.tpg.number_of_nodes() == 2)
+        and (p.tpg.number_of_edges() == 1)
+        and ((1, 2) in p.tpg.edges)
+    )
 
 
 def test_add_dependency_with_missing_task(minimum_project):
@@ -108,6 +112,7 @@ def test_employee_no_dedication_payment():
     e = Employee(1, max_dedication=1.1, normal_salary=1000, overtime_salary=2000)
     assert e.payment(2, 0) == pytest.approx(0)
 
+
 def test_employee_no_work_payment():
     e = Employee(1, max_dedication=1.1, normal_salary=1000, overtime_salary=2000)
     assert e.payment(0, 1.1) == pytest.approx(0)
@@ -133,6 +138,7 @@ def test_add_event_to_timeline(minimum_project):
     p.add_event(ProjectEvent(0.75))
     assert len(p.timeline) > 0 and isinstance(p.timeline[0], ProjectEvent)
 
+
 def test_events_within_interval(minimum_project):
     p = minimum_project
     p.add_event(ProjectEvent(0.75))
@@ -141,5 +147,3 @@ def test_events_within_interval(minimum_project):
     p.add_event(ProjectEvent(3.3))
     events = p.events_within_interval(1, 3)
     assert len(events) == 2 and all(n in [ev.instant for ev in events] for n in [1.2, 2.1])
-
-
