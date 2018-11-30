@@ -1,3 +1,4 @@
+import numpy as np
 import networkx as nx
 
 from dynapsp.core import Entity, Repository
@@ -68,6 +69,18 @@ class ProjectEvent:
         return self._instant
 
 
+class DedicationMatrix:
+    def __init__(self, e, t):
+        self._m = np.zeros((e, t))
+
+    def __getitem__(self, k):
+        return self._m[k[0], k[1]]
+
+    @property
+    def shape(self):
+        return self._m.shape
+
+
 class Project:
     def __init__(self):
         self._tasks = Repository()
@@ -108,6 +121,9 @@ class Project:
 
     def events_within_interval(self, start, finish):
         return [ev for ev in self.timeline if ev.instant >= start and ev.instant <= finish]
+
+    def create_dm(self):
+        return DedicationMatrix(len(self.employees), len(self.tasks))
 
 
 class Error(Exception):

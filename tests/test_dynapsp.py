@@ -1,7 +1,8 @@
 """Tests for `dynapsp` package."""
 
 import pytest
-from dynapsp.project import Project, Task, Employee, InvalidDependencyError, ProjectEvent
+import numpy as np
+from dynapsp.project import Project, Task, Employee, InvalidDependencyError, ProjectEvent, DedicationMatrix
 
 
 @pytest.fixture
@@ -147,3 +148,14 @@ def test_events_within_interval(minimum_project):
     p.add_event(ProjectEvent(3.3))
     events = p.events_within_interval(1, 3)
     assert len(events) == 2 and all(n in [ev.instant for ev in events] for n in [1.2, 2.1])
+
+# Dedication matrix
+
+def test_create_dedication_matrix():
+        dm = DedicationMatrix(2, 2)
+        assert dm.shape == (2, 2) and dm[0, 0] == 0 
+
+def test_dedication_matrix_from_project(minimum_project):
+        p = minimum_project
+        dm = p.create_dm()
+        assert dm.shape == (2, 2) and dm[0, 0] == 0
